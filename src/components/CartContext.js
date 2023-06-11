@@ -1,90 +1,109 @@
-// CartContext.js
-
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect , useCallback } from 'react';
 import axios from 'axios';
+import AuthService from '../services/AuthService'; // import AuthService
 
 export const CartContext = createContext();
 
 export const CartContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [cartItemCount, setCartItemCount] = useState(0); // New state variable
+  const [cartItemCount, setCartItemCount] = useState(0);
 
+  const fetchCartItems = useCallback(async () => {
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
 
-  // Retrieve cart items from the server on component mount
-  useEffect(() => {
-    // Calculate the total count of cart items
-    let totalCount = 0;
-    if (Array.isArray(cartItems)) {
-      totalCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-    }
-    setCartItemCount(totalCount);
-  }, [cartItems]);
-  
-  
-
-  // Fetch cart items from the server
-  const fetchCartItems = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/cart');
+      const response = await axios.get('http://localhost:3001/api/cart', axiosConfig);
       setCartItems(response.data);
+      console.log("Context cartItems:", response.data);
     } catch (error) {
       console.error('Error fetching cart items', error);
     }
+  }, []);
+  
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
+
+  useEffect(() => {
+    const totalCount = Array.isArray(cartItems)
+      ? cartItems.reduce((count, item) => count + item.quantity, 0)
+      : 0;
+    setCartItemCount(totalCount);
+  }, [cartItems]);
+
+  const addToCart = async (item) => {
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/cart', {
+        id: item.id,
+        type: item.type,
+        category: item.category,
+        quantity: parseInt(item.quantity, 10),
+      }, axiosConfig); 
+    } catch (error) {
+      console.error('Error adding item to cart', error);
+    }
+    fetchCartItems();
   };
 
-// Add item to the cart
-const addItemToCart = async (item) => {
-  try {
-    const response = await axios.post('http://localhost:3001/api/cart', {
-      id: item.type, // Assuming the type is a unique identifier
-      name: item.type, // You may need to replace this with the correct value
-      category: item.category,
-      quantity: parseInt(item.quantity, 10)
-    });
-    setCartItems(response.data.cartitems);
-    setCartItemCount(prevCount => prevCount + item.quantity);  // update cartItemCount
-  } catch (error) {
-    console.error('Error adding item to cart', error);
-  }
-};
+  const updateCartItemQuantity = async (itemId, quantity) => {
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
 
-
-  // Update quantity of an item in the cart
-const updateCartItemQuantity = async (itemId, quantity) => {
     try {
-      const response = await axios.put(`http://localhost:3001/api/cart/${itemId}`, { quantity });
-      setCartItems(response.data);
-      // get the difference in quantity and update cartItemCount
-      const item = cartItems.find(item => item.type === itemId);
-      const quantityDifference = quantity - item.quantity;
-      setCartItemCount(prevCount => prevCount + quantityDifference);
+      const response = await axios.put(`http://localhost:3001/api/cart/${itemId}`, { quantity }, axiosConfig);
+       // Update cart after successfully updating an item
     } catch (error) {
       console.error('Error updating item quantity', error);
     }
+    fetchCartItems();
   };
 
-  // Remove item from the cart
-const removeItemFromCart = async (itemId) => {
+  const removeItemFromCart = async (itemId) => {
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
+
     try {
-      const response = await axios.delete(`http://localhost:3001/api/cart/${itemId}`);
-      setCartItems(response.data);
-      // subtract the quantity of the removed item from cartItemCount
-      const item = cartItems.find(item => item.type === itemId);
-      setCartItemCount(prevCount => prevCount - item.quantity);
+      const response = await axios.delete(`http://localhost:3001/api/cart/${itemId}`, axiosConfig);
+       // Update cart after successfully removing an item
     } catch (error) {
       console.error('Error removing item from cart', error);
     }
+    fetchCartItems();
+  };
+
+  const checkoutCart = async () => {
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
+
+    try {
+      await axios.post('http://localhost:3001/api/cart/checkout', null, axiosConfig);
+      setCartItems([]); // Clear cart after successfully checking out
+    } catch (error) {
+      console.error('Error checking out cart', error);
+    }
+    fetchCartItems();
   };
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
-        addItemToCart,
+        addToCart,
         updateCartItemQuantity,
         removeItemFromCart,
         setCartItems,
-        cartItemCount, 
+        cartItemCount,
+        checkoutCart,
+        fetchCartItems, 
       }}
     >
       {children}

@@ -1,13 +1,15 @@
-import React, { useState, useContext } from 'react';
-import { Button, IconButton, TextField, Grid, Typography, Card, CardContent } from '@mui/material';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { Link, useLocation,useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { Grid, Typography, Card, CardContent, TextField, Button } from '@mui/material';
+import * as React from 'react';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
 
 const ItemsPage = () => {
   const location = useLocation();
   const items = location.state.items;
-  const { addItemToCart } = useContext(CartContext);
+  const { addToCart } = useContext(CartContext); // the function is called addToCart, not addItemToCart
 
   const [quantities, setQuantities] = useState({});
 
@@ -17,13 +19,12 @@ const ItemsPage = () => {
 
   const navigate = useNavigate();
 
-  const addToCart = () => {
+  const handleAddToCart = () => { // Renaming the function to avoid naming conflict
     Object.entries(quantities).forEach(([type, quantity]) => {
       const category = items.find(item => item.itemTypes.includes(type)).category;
-      addItemToCart({ category, type, quantity: parseInt(quantity, 10) });
+      addToCart({ id: `${type}-${category}`, category, type, quantity: parseInt(quantity, 10) });
     });
     navigate("/cart"); // Navigate to the cart page after adding items to cart
-
   };
 
   return (
@@ -50,7 +51,7 @@ const ItemsPage = () => {
             ))}
           </Grid>
         ))}
-        <Button variant="contained" color="primary" startIcon={<AddShoppingCartIcon />} onClick={addToCart} style={{ margin: '20px auto', display: 'block' }}>
+        <Button variant="contained" color="primary" startIcon={<AddShoppingCartIcon />} onClick={handleAddToCart} style={{ margin: '20px auto', display: 'block' }}>
           Add to Shopping Cart
         </Button>
       </Grid>
@@ -59,3 +60,4 @@ const ItemsPage = () => {
 };
 
 export default ItemsPage;
+

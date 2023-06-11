@@ -1,60 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Button, IconButton, Typography, Card, CardContent, TextField } from '@mui/material';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
-  const location = useLocation();
-  const { quantities, items } = location.state || {};
-  const { cartItems, updateCartItemQuantity, removeItemFromCart } = useContext(CartContext);
+  const { cartItems, updateCartItemQuantity, removeItemFromCart, fetchCartItems } = useContext(CartContext);
   const navigate = useNavigate();
 
-  const [cart, setCart] = useState([]);
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems]);
 
-  const checkout = () => {
-    // Create a comma-separated string of items and quantities
-    const itemsString = cart
+  const checkoutCart = () => {
+    const itemsString = cartItems
       .map(item => `${item.category}: ${item.type} (Quantity: ${item.quantity})`)
       .join(', ');
 
-    // Navigate to the BookingForm page with the items pre-filled
     navigate('/book-collection', {
-      state: {
-        preFilledItems: itemsString
-      }
+      state: { preFilledItems: itemsString },
     });
   };
 
   const handleSubmit = () => {
+    checkoutCart(); // Call the function to checkout the cart
     navigate('/book-collection', {
-      state: {
-        cartItems: cart
-      }
+      state: { cartItems: cartItems },
     });
   };
 
-  /* useEffect(() => {
-    const newCartItems = Object.entries(quantities).map(([type, quantity]) => ({
-      category: items.find(item => item.itemTypes.includes(type)).category,
-      type,
-      quantity: parseInt(quantity)
-    }));
-    setCart(newCartItems);
-  }, [quantities, items]);
-  */
-
-  useEffect(() => {
-    setCart(cartItems);
-  }, [cartItems]);
-
   const updateQuantity = (itemToUpdate, newQuantity) => {
-    updateCartItemQuantity(itemToUpdate.type, newQuantity);
+    updateCartItemQuantity(itemToUpdate.id, newQuantity);
   };
-
+  
   const removeFromCart = (itemToRemove) => {
-    removeItemFromCart(itemToRemove.type);
+    removeItemFromCart(itemToRemove.id);
   };
 
   return (
@@ -62,16 +43,17 @@ const CartPage = () => {
       <Typography variant="h4" align="center" gutterBottom style={{ marginTop: 30 }}>
         Shopping Cart
       </Typography>
-      {cart.length === 0 ? (
+      {!cartItems || cartItems.length === 0 ? (
         <Typography variant="body1" align="center">
           Your cart is empty
         </Typography>
       ) : (
-        Array.isArray(cart) && cart.map((item, index) => (
+        Array.isArray(cartItems) &&
+        cartItems.map((item, index) => (
           <Card key={index} style={{ margin: '10px 0', maxWidth: '50%', marginLeft: 'auto', marginRight: 'auto' }}>
             <CardContent style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="body1">
-                {item.category}: {item.type}
+                {item.category}: {item.type} {/* Changed this line */}
               </Typography>
               <TextField
                 type="number"
@@ -89,7 +71,7 @@ const CartPage = () => {
           </Card>
         ))
       )}
-      {cart.length > 0 && (
+      {cartItems && cartItems.length > 0 && (
         <Button
           variant="contained"
           color="primary"

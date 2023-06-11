@@ -13,6 +13,7 @@ import ToysIcon from '@mui/icons-material/Toys';
 import ElectricMopedIcon from '@mui/icons-material/ElectricMoped';
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import AuthService from '../services/AuthService';
 
 const CategoryList = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -22,16 +23,28 @@ const CategoryList = () => {
 
   const handleItemClick = async (category) => {
     setSelectedCategory(category.name);
-
+  
+    const token = AuthService.getToken();
+  
+    console.log('The retrieved token is', token);  // This will log your token in the console.
+  
     try {
-      const response = await axios.get(`http://localhost:3001/api/items/${category.name}`);
+      const response = await axios.get(
+        `http://localhost:3001/api/items/${category.name}`,
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const items = response.data;
-
+  
       navigate('/items', { state: { items } });
     } catch (error) {
       console.error("Error fetching items", error);
     }
   };
+
+  
+  
 
   const categories = [
     { name: 'Electronics', icon: <DevicesOtherIcon fontSize="large" /> },
