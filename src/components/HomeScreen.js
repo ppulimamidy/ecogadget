@@ -25,7 +25,7 @@ const HomeScreen = () => {
               <Typography variant="h6" component="h3" gutterBottom>
                 E-Waste Cataloging
               </Typography>
-              <Button variant="outlined" color="primary" onClick={() => navigate('/category-list')}>
+              <Button variant="outlined" color="primary" onClick={() => navigate('/item-listing')}>
                 Go to Catalog
               </Button>
             </Paper>
@@ -74,7 +74,7 @@ const HomeScreen = () => {
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
               <Typography variant="h6" component="h3" gutterBottom>
-                Items Lissting
+                Items Listing
               </Typography>
               <Button variant="outlined" color="primary" onClick={() => navigate('/item-listing')}>
                 Find Now

@@ -95,9 +95,29 @@ const BookingForm = () => {
             </Item>
             <Item item xs={12}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <DatePicker label="Pickup Date" value={values.pickupDate} onChange={handleDateChange} renderInput={(params) => <TextField {...params} helperText={null} required />} error={errors.pickupDate ? true : false} helperText={errors.pickupDate} />
-                <TimePicker label="Pickup Time" value={values.pickupTime} onChange={handleTimeChange} renderInput={(params) => <TextField {...params} helperText={null} required />} error={errors.pickupTime ? true : false} helperText={errors.pickupTime} />
-              </Stack>
+              <DatePicker 
+  label="Pickup Date" 
+  value={values.pickupDate} 
+  onChange={handleDateChange} 
+  components={{
+    TextField: TextField
+  }}
+  error={errors.pickupDate ? true : false} 
+  helperText={errors.pickupDate} 
+  required 
+/>
+<TimePicker 
+  label="Pickup Time" 
+  value={values.pickupTime} 
+  onChange={handleTimeChange} 
+  components={{
+    TextField: TextField
+  }}
+  error={errors.pickupTime ? true : false} 
+  helperText={errors.pickupTime} 
+  required 
+/>            
+            </Stack>
             </Item>
             <Item item xs={12}>
               <TextField name="notes" label="Notes" variant="outlined" required fullWidth onChange={handleChange} error={errors.notes ? true : false} helperText={errors.notes} />

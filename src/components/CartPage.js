@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Button, IconButton, Typography, Card, CardContent, TextField } from '@mui/material';
+import { Button, IconButton, Typography, Card, CardContent, TextField, Container } from '@mui/material';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { CartContext } from './CartContext';
@@ -24,7 +24,7 @@ const CartPage = () => {
   };
 
   const handleSubmit = () => {
-    checkoutCart(); // Call the function to checkout the cart
+    checkoutCart();
     navigate('/book-collection', {
       state: { cartItems: cartItems },
     });
@@ -40,7 +40,7 @@ const CartPage = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <Container maxWidth="md">
       <Typography variant="h4" align="center" gutterBottom style={{ marginTop: 30 }}>
         Shopping Cart
       </Typography>
@@ -51,23 +51,25 @@ const CartPage = () => {
       ) : (
         Array.isArray(cartItems) &&
         cartItems.map((item, index) => (
-          <Card key={index} style={{ margin: '10px 0', maxWidth: '50%', marginLeft: 'auto', marginRight: 'auto' }}>
+          <Card key={index} style={{ margin: '10px auto' }}>
             <CardContent style={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="body1">
-                {item.category}: {item.type} {/* Changed this line */}
+                {item.category}: {item.type}
               </Typography>
-              <TextField
-                type="number"
-                InputProps={{ inputProps: { min: 1, max: 9999 } }}
-                variant="outlined"
-                size="small"
-                style={{ marginLeft: 10, width: '80px' }}
-                value={item.quantity}
-                onChange={(e) => updateQuantity(item, parseInt(e.target.value))}
-              />
-              <IconButton onClick={() => removeFromCart(item)} style={{ marginLeft: 'auto' }}>
-                <RemoveShoppingCartIcon />
-              </IconButton>
+              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                <TextField
+                  type="number"
+                  InputProps={{ inputProps: { min: 1, max: 9999 } }}
+                  variant="outlined"
+                  size="small"
+                  style={{ width: '80px' }}
+                  value={item.quantity}
+                  onChange={(e) => updateQuantity(item, parseInt(e.target.value))}
+                />
+                <IconButton onClick={() => removeFromCart(item)} style={{ marginLeft: 10 }}>
+                  <RemoveShoppingCartIcon />
+                </IconButton>
+              </div>
             </CardContent>
           </Card>
         ))
@@ -77,14 +79,17 @@ const CartPage = () => {
           variant="contained"
           color="primary"
           startIcon={<ShoppingCartIcon />}
-          style={{ marginTop: 30, width: '50%', marginLeft: 'auto', marginRight: 'auto' }}
+          style={{ marginTop: 30, display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
           onClick={handleSubmit}
         >
           Checkout
         </Button>
       )}
-    </div>
+    </Container>
   );
 };
 
 export default CartPage;
+
+
+
