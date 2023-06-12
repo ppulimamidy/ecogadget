@@ -91,19 +91,7 @@ const BookingForm = () => {
               <TextField name="phone" label="Phone" variant="outlined" required fullWidth onChange={handleChange} error={errors.phone ? true : false} helperText={errors.phone} />
             </Item>
             <Item item xs={12}>
-            <TextField
-  name="items"
-  label="Items (separated by commas)"
-  variant="outlined"
-  required
-  fullWidth
-  multiline
-  rows={4}
-  value={preFilledItems}
-  onChange={handleChange}
-  error={errors.items ? true : false}
-  helperText={errors.items}
-/>
+            <TextField name="items" label="Items (separated by commas)" variant="outlined" required fullWidth multiline rows={4} value={preFilledItems} onChange={handleChange} error={errors.items ? true : false} helperText={errors.items} />
             </Item>
             <Item item xs={12}>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>

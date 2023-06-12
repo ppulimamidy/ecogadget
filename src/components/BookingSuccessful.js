@@ -7,13 +7,7 @@ const BookingSuccessful = () => {
     return (
         <Box>
         <Container>
-            <Box 
-                display="flex" 
-                flexDirection="column" 
-                alignItems="center" 
-                justifyContent="center" 
-                height="100vh"
-            >
+            <Box display="flex" flexDirection="column"  alignItems="center" justifyContent="center" height="100vh">
                 <CheckCircleOutlineIcon style={{ fontSize: 100, color: 'green' }}/>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Booking Successful!
