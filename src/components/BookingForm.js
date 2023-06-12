@@ -27,25 +27,24 @@ const BookingForm = () => {
   const { cartItems } = location.state || {};
 
   const [errors, setErrors] = useState({});
-
-  const { preFilledItems } = location.state || {};
-
- 
+  const [preFilledItems, setPreFilledItems] = useState(location.state?.preFilledItems || '');
 
   useEffect(() => {
-    // Set the pre-filled items in the items field
-    if (preFilledItems) {
-      setValues(prevValues => ({
-        ...prevValues,
-        items: preFilledItems
-      }));
+    if (cartItems) {
+      const itemsString = cartItems
+        .map(item => `${item.category}: ${item.type} (Quantity: ${item.quantity})`)
+        .join(", ");
+      setPreFilledItems(itemsString);
+      setValues(prevValues => ({ ...prevValues, items: itemsString }));
     }
-  }, [preFilledItems]);
+  }, [cartItems]);
+  
+  
 
   const handleChange = (e) => {
     setValues({
       ...values,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
@@ -92,7 +91,7 @@ const BookingForm = () => {
               <TextField name="phone" label="Phone" variant="outlined" required fullWidth onChange={handleChange} error={errors.phone ? true : false} helperText={errors.phone} />
             </Item>
             <Item item xs={12}>
-          <TextField
+            <TextField
   name="items"
   label="Items (separated by commas)"
   variant="outlined"
@@ -100,7 +99,7 @@ const BookingForm = () => {
   fullWidth
   multiline
   rows={4}
-  value={cartItems ? cartItems.map(item => `${item.category}: ${item.type} (Quantity: ${item.quantity})`).join(", ") : ""}
+  value={preFilledItems}
   onChange={handleChange}
   error={errors.items ? true : false}
   helperText={errors.items}

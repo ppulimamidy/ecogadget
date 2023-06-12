@@ -31,11 +31,12 @@ const CartPage = () => {
   };
 
   const updateQuantity = (itemToUpdate, newQuantity) => {
-    updateCartItemQuantity(itemToUpdate.id, newQuantity);
+    updateCartItemQuantity(itemToUpdate._id, newQuantity);
   };
-  
+
   const removeFromCart = (itemToRemove) => {
-    removeItemFromCart(itemToRemove.id);
+    console.log("the values in the item are :" , itemToRemove);
+    removeItemFromCart(itemToRemove._id);
   };
 
   return (

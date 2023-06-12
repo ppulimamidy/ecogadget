@@ -27,7 +27,7 @@ const App = () => {
     palette: {
       mode: darkMode ? 'dark' : 'light',
     },
-    shadows: ['0px 3px 5px 2px rgba(255, 105, 135, .3)'], // Update the shadow configuration
+    shadows: Array(25).fill('0px 3px 5px 2px rgba(255, 105, 135, .3)'), // This creates an array of 25 items, and each item has the same shadow value
   });
 
   return (
