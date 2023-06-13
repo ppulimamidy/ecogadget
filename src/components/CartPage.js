@@ -36,7 +36,7 @@ const CartPage = () => {
 
   const removeFromCart = (itemToRemove) => {
     console.log("the values in the item are :" , itemToRemove);
-    removeItemFromCart(itemToRemove._id);
+    removeItemFromCart(itemToRemove);
   };
 
   return (

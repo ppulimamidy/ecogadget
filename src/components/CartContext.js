@@ -65,13 +65,14 @@ export const CartContextProvider = ({ children }) => {
     fetchCartItems();
   };
 
-  const removeItemFromCart = async (itemId) => {
+  const removeItemFromCart = async (itemToRemove) => {
     const axiosConfig = {
       headers: { Authorization: `Bearer ${AuthService.getToken()}` },
     };
 
     try {
-      const response = await axios.delete(`http://localhost:3001/api/cart/${itemId}`, axiosConfig);
+      const response = await axios.delete(`http://localhost:3001/api/cart/${itemToRemove._id}`, axiosConfig);
+
        // Update cart after successfully removing an item
     } catch (error) {
       console.error('Error removing item from cart', error);
