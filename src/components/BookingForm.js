@@ -5,6 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { TimePicker } from '@mui/x-date-pickers';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import AuthService from '../services/AuthService'; // import AuthService
 
 const Item = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -64,8 +65,12 @@ const BookingForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${AuthService.getToken()}` },
+    };
+
     try {
-      await axios.post('http://127.0.0.1:3001/api/bookings', values);
+      await axios.post('http://127.0.0.1:3001/api/bookings', values, axiosConfig);
       navigate('/booking-successful');
     } catch (err) {
       setErrors(err.response.data);
